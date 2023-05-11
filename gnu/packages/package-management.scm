@@ -1067,7 +1067,8 @@ and not test_conda_root_outside_root_environment"))
          (add-before 'check 'set-HOME
            (lambda _ (setenv "HOME" "/tmp"))))))
     (propagated-inputs
-     (list python-clyent python-nbformat python-pyyaml python-requests))
+     (list python-clyent python-nbformat python-pyyaml python-requests
+           python-setuptools))
     (native-inputs
      (list python-coverage
            python-dateutil
@@ -1075,7 +1076,8 @@ and not test_conda_root_outside_root_environment"))
            python-mock
            python-pillow
            python-pytest
-           python-pytz))
+           python-pytz
+           python-wheel))
     (home-page "https://github.com/Anaconda-Platform/anaconda-client")
     (synopsis "Anaconda Cloud command line client library")
     (description

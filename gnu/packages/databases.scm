@@ -3131,6 +3131,7 @@ protocol with Cython for performance.")
     (build-system pyproject-build-system)
     (arguments '(#:tests? #f))           ;test suite requires docker
     (propagated-inputs (list python-pymysql))
+    (native-inputs (list python-setuptools python-wheel))
     (home-page "https://github.com/aio-libs/aiomysql")
     (synopsis "MySQL driver for Python")
     (description "@code{aiomysql} is a driver for accessing a MySQL database
@@ -3572,7 +3573,8 @@ on localhost.")
     (build-system pyproject-build-system)
     (native-inputs
      (list python-cython ; for C extensions
-           python-pytest python-mock python-pytest-xdist)) ; for tests
+           python-pytest python-mock python-pytest-xdist ; for tests
+           python-setuptools python-wheel))
     (propagated-inputs
      (list python-greenlet))
     (arguments
@@ -3770,7 +3772,7 @@ text search extension.")
     (propagated-inputs (list python-click python-click-default-group
                              python-dateutil python-sqlite-fts4
                              python-tabulate))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (home-page "https://github.com/simonw/sqlite-utils")
     (synopsis
      "CLI tool and Python utility functions for manipulating SQLite databases")
@@ -3843,7 +3845,7 @@ PickleShare.")
          "1vfrzb414pbh5k0cgcqkp039jvla2galapn4a551zgh8xi70bnrp"))))
     (build-system pyproject-build-system)
     (native-inputs
-     (list unzip))
+     (list unzip python-setuptools python-wheel))
     (inputs (list sqlite-next))         ;SQLite 3.45.1 required.
     (arguments
      (list
@@ -4196,7 +4198,7 @@ for Python.  The design goals are:
                             ;; The fix was forwarded upstream, see:
                             ;; https://github.com/redis/hiredis-py/pull/160.
                             (delete-file "tests/__init__.py"))))))
-    (native-inputs (list python-pytest))
+    (native-inputs (list python-pytest python-setuptools python-wheel))
     (inputs (list hiredis))
     (home-page "https://github.com/redis/hiredis-py")
     (synopsis "Python extension that wraps protocol parsing code in hiredis")
@@ -4288,6 +4290,8 @@ reasonable substitute.")
      (list python-pytest
            python-pytest-asyncio
            python-pytest-timeout
+           python-setuptools
+           python-wheel
            redis))
     (propagated-inputs
      (list python-async-timeout))
