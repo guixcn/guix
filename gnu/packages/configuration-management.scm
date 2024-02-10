@@ -78,8 +78,7 @@
                          "secretonepassword.txt"
                          "secretpass.txt")))))))
     (native-inputs
-     (list go-etcd-io-bbolt
-           go-github-com-alecthomas-chroma
+     (list go-github-com-alecthomas-chroma
            go-github-com-aymerick-douceur
            go-github-com-bmatcuk-doublestar-v2
            go-github-com-charmbracelet-glamour
@@ -124,6 +123,7 @@
            go-github-com-yuin-goldmark
            go-github-com-zalando-go-keyring
            go-github-go-git
+           go-go-etcd-io-bbolt
            go-golang-org-x-crypto
            go-golang-org-x-net
            go-golang-org-x-oauth2
