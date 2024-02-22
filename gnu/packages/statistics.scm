@@ -2302,7 +2302,8 @@ inference (VI) algorithms.")
                 (("\"error::DeprecationWarning\",") "")))))))
     (propagated-inputs (list python-importlib-metadata python-numpoly
                              python-numpy python-scipy))
-    (native-inputs (list python-pytest python-scikit-learn))
+    (native-inputs (list python-pytest python-scikit-learn python-setuptools
+                         python-wheel))
     (home-page "https://chaospy.readthedocs.io/en/master/")
     (synopsis "Numerical tool for performing uncertainty quantification")
     (description "Chaospy is a numerical toolbox for performing uncertainty
@@ -2354,7 +2355,8 @@ building design matrices.")
                (base32
                 "185nnsl6ag2xzkfxpmc86d9dd8wf2v87b2psan10sma399fbqd0x"))))
     (build-system pyproject-build-system)
-    (native-inputs (list python-pandas python-pytest))
+    (native-inputs (list python-pandas python-pytest python-setuptools
+                         python-wheel))
     (propagated-inputs (list python-numpy python-scikit-learn))
     (home-page "https://github.com/scikit-learn-contrib/MAPIE")
     (synopsis "Module for estimating prediction intervals")
@@ -2382,7 +2384,9 @@ conformal prediction methods intervals.")
     (native-inputs (list python-coverage
                          python-pytest
                          python-pytest-cov
-                         python-setuptools-scm))
+                         python-setuptools
+                         python-setuptools-scm
+                         python-wheel))
     (home-page "https://emcee.readthedocs.io/en/stable/")
     (synopsis "Ensemble sampling toolkit for MCMC")
     (description
