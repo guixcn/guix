@@ -49,6 +49,7 @@
 ;;; Copyright © 2023 Hilton Chain <hako@ultrarare.space>
 ;;; Copyright © 2023 Troy Figiel <troy@troyfigiel.com>
 ;;; Copyright © 2024 Giacomo Leidi <goodoldpaul@autistici.org>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -290,6 +291,7 @@ source code editors and IDEs.")
     (inherit check)
     (version "0.14.0")
     (source (origin
+              (inherit (package-source check))
               (method url-fetch)
               (uri (string-append "https://github.com/libcheck/check/releases"
                                   "/download/" version "/check-" version ".tar.gz"))
@@ -650,7 +652,7 @@ pattern.")
 (define-public catch2-3
   (package
     (name "catch2")
-    (version "3.5.1")
+    (version "3.5.3")
     (home-page "https://github.com/catchorg/Catch2")
     (source (origin
               (method git-fetch)
@@ -660,19 +662,12 @@ pattern.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "0p7rk01n4qfnnm1bgakllyqi83n1kbpz11gh65z1vspfz58hs9iv"))))
+                "11yla93vm2896fzhm3fz8lk3y3iz5iy7vd6wa7wnwvhsfd2dbfq3"))))
     (build-system cmake-build-system)
     (arguments
      (list
       #:configure-flags
-      #~(list #$@(match (%current-system)
-                   ((or "x86_64-linux" "i686-linux")
-                    ;; Tests fail on i686-linux without SSE2 for floats, see
-                    ;; upstream report
-                    ;; <https://github.com/catchorg/Catch2/issues/2796>.
-                    '("-DCMAKE_CXX_FLAGS=-msse2 -mfpmath=sse"))
-                   (_ '()))
-              "-DCATCH_DEVELOPMENT_BUILD=ON"
+      #~(list "-DCATCH_DEVELOPMENT_BUILD=ON"
               "-DCATCH_ENABLE_WERROR=OFF"
               "-DBUILD_SHARED_LIBS=ON")))
     (inputs (list python-wrapper))

@@ -972,13 +972,13 @@ effects of different types of color-blindness.")
 (define-public r-digest
   (package
     (name "r-digest")
-    (version "0.6.34")
+    (version "0.6.35")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "digest" version))
        (sha256
-        (base32 "1na47pywh059g9ymf56z232h5yxbj0gn755cb10ms5igjd97awqb"))))
+        (base32 "07vqv2mnf8ppan2a3gydh4yr84n8489hypfas1rlk7050nxkycyc"))))
     (build-system r-build-system)
     ;; Vignettes require r-knitr, which requires r-digest, so we have to
     ;; disable them and the tests.
@@ -3271,30 +3271,29 @@ certain criterion, e.g., it contains a certain regular file.")
 (define-public r-rmarkdown
   (package
     (name "r-rmarkdown")
-    (version "2.25")
+    (version "2.26")
     (source
       (origin
         (method url-fetch)
         (uri (cran-uri "rmarkdown" version))
         (sha256
-          (base32 "0m814598vc67sjwk83xh9g17n72618l32dgg7fz8y0gycqk6dr06"))))
+          (base32 "1q6z2j1y6pjdz4nzw44srv9j62irnxqhkvrsi46ma7xrzq6ig34g"))))
     (properties
      `((upstream-name . "rmarkdown")
        (updater-extra-propagated-inputs . ("pandoc"))))
     (build-system r-build-system)
     (propagated-inputs
-     (list r-bslib
+     (list pandoc
+           r-bslib
            r-evaluate
            r-fontawesome
            r-htmltools
            r-jquerylib
            r-jsonlite
            r-knitr
-           r-stringr
            r-tinytex
            r-xfun
-           r-yaml
-           pandoc))
+           r-yaml))
     (native-inputs
      (list esbuild r-knitr))
     (home-page "https://rmarkdown.rstudio.com")
@@ -4534,14 +4533,14 @@ more complete @code{viridis} package.")
 (define-public r-tidyselect
   (package
     (name "r-tidyselect")
-    (version "1.2.0")
+    (version "1.2.1")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "tidyselect" version))
        (sha256
         (base32
-         "0fwy4qp3j0ksy15rkrh3588h7wa8c21h0fzx5s762zg34yvjd3ak"))))
+         "0g4h8mfm5ima0izy4h0c65q478473xsj4hskh15dzg5z1fx9g7hn"))))
     (build-system r-build-system)
     (propagated-inputs
      (list r-cli r-glue r-lifecycle r-rlang r-vctrs r-withr))
@@ -4953,13 +4952,13 @@ package instead.")
 (define-public r-hmisc
   (package
     (name "r-hmisc")
-    (version "5.1-1")
+    (version "5.1-2")
     (source
      (origin
        (method url-fetch)
        (uri (cran-uri "Hmisc" version))
        (sha256
-        (base32 "0laan26ja6m9k3spkk1ymalwb181ramzjq6ii3b0404xv2kfywa9"))))
+        (base32 "088gniwbymzhqg3vp0kpkbazryjzy9iq6wdvf9hg9qf0sjbibpg7"))))
     (properties `((upstream-name . "Hmisc")))
     (build-system r-build-system)
     (native-inputs

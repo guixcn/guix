@@ -34,6 +34,7 @@
 ;;; Copyright © 2022 muradm <mail@muradm.net>
 ;;; Copyright © 2023 Alex Devaure <ajadevaure@gmail.com>
 ;;; Copyright © 2023 Bruno Victal <mirai@makinata.eu>
+;;; Copyright © 2024 Zheng Junjie <873216071@qq.com>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -1439,7 +1440,10 @@ XEv.")
         (base32 "0bpix92vzip9vlhzihj3k8h9flrlna231x3y8ah7p4965l177yjd"))))
     (build-system meson-build-system)
     (native-inputs
-     (list pkg-config wayland libxkbcommon))
+     (list pkg-config
+           ;; for wayland-scanner
+           wayland))
+    (inputs (list wayland libxkbcommon))
     (synopsis "Xdotool type for Wayland")
     (description "Wtype lets you simulate keyboard input and mouse activity,
 move and resize windows, etc.")
@@ -1450,7 +1454,7 @@ move and resize windows, etc.")
 (define-public exempi
   (package
     (name "exempi")
-    (version "2.5.2")
+    (version "2.6.5")
     (source (origin
              (method url-fetch)
              (uri (string-append
@@ -1458,7 +1462,7 @@ move and resize windows, etc.")
                    name "-" version ".tar.bz2"))
              (sha256
               (base32
-               "1mdfxb36p8251n5m7l55gx3fcqpk46yz9v568xfr8igxmqa47xaj"))))
+               "1zhzwkfna14sy78llhfc94cy5hv3076j5v3p1zmvawzz5gaa7yg9"))))
     (build-system gnu-build-system)
     (arguments
      `(#:configure-flags (list (string-append "--with-boost="
@@ -1472,8 +1476,7 @@ move and resize windows, etc.")
              ;; <https://gitlab.freedesktop.org/libopenraw/exempi/-/issues/17>.
              ;; Simply delete the static library instead to save ~4.3 MiB.
              (delete-file (string-append (assoc-ref outputs "out")
-                                         "/lib/libexempi.a"))
-             #t)))))
+                                         "/lib/libexempi.a")))))))
     (native-inputs
      (list boost)) ; tests
     (inputs
@@ -2369,14 +2372,14 @@ their MIME type.
 (define-public uchardet
   (package
     (name "uchardet")
-    (version "0.0.7")
+    (version "0.0.8")
     (source
       (origin
         (method url-fetch)
         (uri (string-append "https://www.freedesktop.org/software/"
                             name "/releases/" name "-" version ".tar.xz"))
         (sha256
-          (base32 "1ca51sryhryqz82v4d0graaiqqq5w2f33a9gj83b910xmq499irz"))))
+          (base32 "1w659aiphbnczpry771diakrzg9a8aqpn2abcxx1870aq37n0yp9"))))
     (build-system cmake-build-system)
     (home-page "https://www.freedesktop.org/wiki/Software/uchardet/")
     (synopsis "Encoding detector library")
@@ -2695,7 +2698,7 @@ compatible with the well-known scripts of the same name.")
 (define-public libportal
   (package
     (name "libportal")
-    (version "0.6")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2704,7 +2707,7 @@ compatible with the well-known scripts of the same name.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1q1kqq72cs7f5b17gzw7218mxs65hijzkll27mh51s02fpiw8c60"))))
+                "0ypl9ds5g5jzyirjg4ic0r7lzv39w67yrh8njz1cw566g4j1kfny"))))
     (build-system meson-build-system)
     (arguments
      (list
@@ -2903,7 +2906,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
 (define-public xdg-desktop-portal-wlr
   (package
     (name "xdg-desktop-portal-wlr")
-    (version "0.7.0")
+    (version "0.7.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -2912,7 +2915,7 @@ for xdg-desktop-portal that is using Qt/KF5.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "1b3hpp3ybjgnnmnwsyb5bsnvz9q5nr3zz0j1alh02g24f68lf00k"))
+                "1mbq3czka9swwmfaasnaj89y2m254p3qa522ayclh688jdwh70hq"))
               (patches (search-patches "xdg-desktop-portal-wlr-harcoded-length.patch"))))
     (build-system meson-build-system)
     (arguments

@@ -550,8 +550,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
   (team 'lxqt
         #:name "LXQt team"
         #:description "LXQt desktop environment."
-        #:scope (list "gnu/packages/lxqt.scm"
-                      "gnu/packages/qt.scm")))
+        #:scope (list "gnu/packages/lxqt.scm")))
 
 (define-team audio
   (team 'audio
@@ -588,6 +587,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
 (define-member (person "Andreas Enge"
                        "andreas@enge.fr")
   lxqt science tex)
+
+(define-member (person "Tanguy Le Carrour"
+                       "tanguy@bioneland.org")
+  python home)
 
 (define-member (person "Tobias Geerinckx-Rice"
                        "me@tobias.gr")
@@ -667,7 +670,7 @@ GLib/GIO, GTK, GStreamer and Webkit."
 
 (define-member (person "宋文武"
                        "iyzsong@envs.net")
-  games localization lxqt xfce)
+  games localization lxqt qt xfce)
 
 (define-member (person "Vagrant Cascadian"
                        "vagrant@debian.org")
@@ -724,6 +727,10 @@ GLib/GIO, GTK, GStreamer and Webkit."
 (define-member (person "Mark H Weaver"
                        "mhw@netris.org")
   mozilla)
+
+(define-member (person "Adam Faiz"
+                       "adam.faiz@disroot.org")
+  games)
 
 
 (define (find-team name)

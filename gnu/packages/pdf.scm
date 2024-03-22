@@ -17,7 +17,7 @@
 ;;; Copyright © 2019 Alex Griffin <a@ajgrf.com>
 ;;; Copyright © 2019 Ben Sturmfels <ben@sturm.com.au>
 ;;; Copyright © 2019,2020 Hartmut Goebel <h.goebel@crazy-compilers.com>
-;;; Copyright © 2020-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2020-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2020, 2022 Michael Rohleder <mike@rohleder.de>
 ;;; Copyright © 2020, 2024 Timotej Lazar <timotej.lazar@araneo.si>
 ;;; Copyright © 2020, 2022, 2023, 2024 Maxim Cournoyer <maxim.cournoyer@gmail.com>
@@ -25,6 +25,8 @@
 ;;; Copyright © 2022 Paul A. Patience <paul@apatience.com>
 ;;; Copyright © 2022 Petr Hodina <phodina@protonmail.com>
 ;;; Copyright © 2023 Felix Gruber <felgru@posteo.net>
+;;; Copyright © 2024 dan <i@dan.games>
+;;; Copyright © 2023 Benjamin Slade <slade@lambda-y.net>
 ;;;
 ;;; This file is part of GNU Guix.
 ;;;
@@ -55,6 +57,7 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt)
   #:use-module (gnu packages)
+  #:use-module (gnu packages aidc)
   #:use-module (gnu packages audio)
   #:use-module (gnu packages autotools)
   #:use-module (gnu packages backup)
@@ -430,40 +433,25 @@ When present, Poppler is able to correctly render CJK and Cyrillic text.")
 (define-public python-poppler-qt5
   (package
     (name "python-poppler-qt5")
-    (version "21.1.0")
+    (version "21.3.0")
     (source
-      (origin
-        (method url-fetch)
-        (uri (pypi-uri "python-poppler-qt5" version))
-        (sha256
-         (base32
-          "0b82gm4i75q5v19kfbq0h4y0b2vcwr2213zkhxh6l0h45kdndmxd"))
-       (patches (search-patches "python-poppler-qt5-fix-build.patch"))))
-    (build-system python-build-system)
+     (origin
+       (method url-fetch)
+       (uri (pypi-uri "python-poppler-qt5" version))
+       (sha256
+        (base32 "1q3gvmsmsq3llf9mcbhlkryrgprqrw2z7wmnvagy180f3y2fhxxl"))))
+    (build-system pyproject-build-system)
     (arguments
-     `(;; There are no tests.  The check phase just causes a rebuild.
-       #:tests? #f
-       #:phases
-       (modify-phases %standard-phases
-         (replace 'build
-           (lambda* (#:key inputs #:allow-other-keys)
-             (substitute* "setup.py"
-               ;; This check always fails, so disable it.
-               (("if not check_qtxml\\(\\)")
-                "if True"))
-             ;; We need to pass an extra flag here.  This cannot be in
-             ;; configure-flags because it should not be passed for the
-             ;; installation phase.
-             ((@@ (guix build python-build-system) call-setuppy)
-              "build_ext" (list (string-append "--pyqt-sip-dir="
-                                               (assoc-ref inputs "python-pyqt")
-                                               "/share/sip")) #t))))))
-    (native-inputs
-     (list pkg-config))
-    (inputs
-     (list python-sip-4 python-pyqt poppler-qt5 qtbase-5))
-    (home-page "https://pypi.org/project/python-poppler-qt5/")
-    (synopsis "Python bindings for Poppler-Qt5")
+     `(;; The sipbuild.api backend builder expects a Python dictionary as per
+       ;; https://peps.python.org/pep-0517/#config-settings, but we
+       ;; give it lists and it fails.  The next line is a workaround.
+       #:configure-flags '#nil
+       #:tests? #f))
+    (native-inputs (list pkg-config))
+    (inputs (list python-sip python-pyqt-builder python-pyqt poppler-qt5
+                  qtbase-5))
+    (home-page "https://github.com/frescobaldi/python-poppler-qt5")
+    (synopsis "Python binding to Poppler-Qt5")
     (description
      "This package provides Python bindings for the Qt5 interface of the
 Poppler PDF rendering library.")
@@ -1048,7 +1036,7 @@ using a stylus.")
 (define-public xournalpp
   (package
     (name "xournalpp")
-    (version "1.2.2")
+    (version "1.2.3")
     (source
      (origin
        (method git-fetch)
@@ -1057,7 +1045,7 @@ using a stylus.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1svmdj43z1shm3wnkrdrq1h6rba843mp4x4d8jmxsx7kwiiz9l78"))))
+        (base32 "1rj9kz21r59cswfpczp5dcmvchbbmybv661iyycaiii2z5gh0h7i"))))
     (build-system cmake-build-system)
     (arguments
      (list
@@ -1221,13 +1209,13 @@ the PDF pages.")
 (define-public img2pdf
   (package
     (name "img2pdf")
-    (version "0.4.4")
+    (version "0.5.1")
     (source
      (origin
        (method url-fetch)
        (uri (pypi-uri "img2pdf" version))
        (sha256
-        (base32 "0g3rpq68y5phnlgxrqn39k10j9nmgksg6m5ic8wgs8v5cjlrij4f"))))
+        (base32 "158bgnk2jhjnpyld4z3jq8v2j8837vh4j0672g8mnjrg4i3px13k"))))
     (build-system python-build-system)
     (propagated-inputs
      (list python-pikepdf python-pillow
@@ -1525,7 +1513,7 @@ multiple files.")
 (define-public pdfpc
   (package
     (name "pdfpc")
-    (version "4.5.0")
+    (version "4.6.0")
     (source
      (origin
        (method git-fetch)
@@ -1534,22 +1522,13 @@ multiple files.")
              (commit (string-append "v" version))))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0bmy51w6ypz927hxwp5g7wapqvzqmsi3w32rch6i3f94kg1152ck"))))
+        (base32 "0kj84sf5hgr2v2ra6dxmxqcr173h17cpnhg9lcq36shdbdnncwg4"))))
     (build-system cmake-build-system)
-    (arguments
-     '(#:tests? #f          ; no test target
-       #:phases
-       (modify-phases %standard-phases
-         ;; This is really a bug in Vala.
-         ;; https://github.com/pdfpc/pdfpc/issues/594
-         (add-after 'unpack 'fix-vala-API-conflict
-           (lambda _
-             (substitute* "src/classes/action/movie.vala"
-               (("info.from_caps\\(caps\\)")
-                "Gst.Video.info_from_caps(out info, caps)")))))))
+    (arguments '(#:tests? #f))           ; no test target
     (inputs
      `(("cairo" ,cairo)
        ("discount" ,discount) ; libmarkdown
+       ("qrencode" ,qrencode)
        ("gtk+" ,gtk+)
        ("gstreamer" ,gstreamer)
        ("gst-plugins-base" ,gst-plugins-base)
@@ -1709,3 +1688,62 @@ python library.
 
 Keywords: html2pdf, htmltopdf")
     (license license:bsd-3)))
+
+(define-public sioyek
+  (package
+    (name "sioyek")
+    (version "2.0.0")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/ahrm/sioyek")
+             (commit (string-append "v" version))))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1vmmp2s032ygh1byz77pg9aljmp8hx745fr7mmz11831f96mlmhq"))
+       (modules '((guix build utils)))
+       ;; libmupdf-third.so no longer available since mupdf 1.18.0.
+       (snippet '(substitute* "pdf_viewer_build_config.pro"
+                   (("-lmupdf-third") "")))
+       ;; XXX: Fix build with mupdf-0.23.0+.
+       ;; See also: https://github.com/ahrm/sioyek/issues/804
+       (patches (search-patches "sioyek-fix-build.patch"))))
+    (build-system gnu-build-system)
+    (arguments
+     (list
+      #:configure-flags
+      #~(list (string-append "PREFIX=" #$output))
+      #:phases
+      #~(modify-phases %standard-phases
+          (add-after 'unpack 'patch-paths
+            (lambda _
+              (substitute* "pdf_viewer/main.cpp"
+                (("/usr/share")
+                 (string-append #$output "/share"))
+                (("/etc")
+                 (string-append #$output "/etc")))))
+          (replace 'configure
+            (lambda* (#:key configure-flags #:allow-other-keys)
+              (apply invoke "qmake" configure-flags)))
+          (add-after 'install 'instal-man-page
+            (lambda _
+              (install-file "resources/sioyek.1"
+                            (string-append #$output "/share/man/man1")))))))
+    (inputs
+     (list freetype
+           gumbo-parser
+           harfbuzz
+           jbig2dec
+           libjpeg-turbo
+           mujs
+           mupdf
+           openjpeg
+           qt3d-5
+           qtbase-5
+           zlib))
+    (home-page "https://sioyek.info/")
+    (synopsis "PDF viewer with a focus on technical books and research papers")
+    (description
+     "Sioyek is a PDF viewer with a focus on textbooks and research papers.")
+    (license license:gpl3+)))

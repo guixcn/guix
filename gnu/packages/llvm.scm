@@ -7,7 +7,7 @@
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
 ;;; Copyright © 2018–2022 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2018, 2019 Tobias Geerinckx-Rice <me@tobias.gr>
-;;; Copyright © 2018, 2021-2024 Efraim Flashner <efraim@flashner.co.il>
+;;; Copyright © 2018, 2021-2023 Efraim Flashner <efraim@flashner.co.il>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Pierre Neidhardt <mail@ambrevar.xyz>
 ;;; Copyright © 2019 Rutger Helling <rhelling@mykolab.com>
@@ -66,6 +66,7 @@
   #:use-module (gnu packages compression)
   #:use-module (gnu packages libedit)
   #:use-module (gnu packages libffi)
+  #:use-module (gnu packages llvm-meta)
   #:use-module (gnu packages lua)
   #:use-module (gnu packages mpi)
   #:use-module (gnu packages ncurses)
@@ -80,8 +81,7 @@
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 match)
   #:export (make-lld-wrapper
-            system->llvm-target
-            clang-properties))
+            system->llvm-target))
 
 (define* (system->llvm-target #:optional
                               (system (or (and=> (%current-target-system)
@@ -470,68 +470,7 @@ code analysis tools.")
 
 (define (clang-properties version)
   "Return package properties for Clang VERSION."
-  `((compiler-cpu-architectures
-     ("x86_64"
-      ;; This list was obtained by running:
-      ;;
-      ;;   guix shell clang -- llc -march=x86-64 -mattr=help
-      ;;
-      ;; filtered from uninteresting entries such as "i686" and "pentium".
-      ,@(if (version>=? version "10.0")           ;TODO: refine
-            '("atom"
-              "barcelona"
-              "bdver1"
-              "bdver2"
-              "bdver3"
-              "bdver4"
-              "bonnell"
-              "broadwell"
-              "btver1"
-              "btver2"
-              "c3"
-              "c3-2"
-              "cannonlake"
-              "cascadelake"
-              "cooperlake"
-              "core-avx-i"
-              "core-avx2"
-              "core2"
-              "corei7"
-              "corei7-avx"
-              "generic"
-              "geode"
-              "goldmont"
-              "goldmont-plus"
-              "haswell"
-              "icelake-client"
-              "icelake-server"
-              "ivybridge"
-              "k8"
-              "k8-sse3"
-              "knl"
-              "knm"
-              "lakemont"
-              "nehalem"
-              "nocona"
-              "opteron"
-              "opteron-sse3"
-              "sandybridge"
-              "silvermont"
-              "skx"
-              "skylake"
-              "skylake-avx512"
-              "slm"
-              "tigerlake"
-              "tremont"
-              "westmere"
-              "x86-64"
-              "x86-64-v2"
-              "x86-64-v3"
-              "x86-64-v4"
-              "znver1"
-              "znver2"
-              "znver3")
-            '())))))
+  `((clang-compiler-cpu-architectures version)))
 
 (define-public (make-clang-toolchain clang libomp)
   (package
@@ -604,7 +543,8 @@ output), and Binutils.")
                  "clang-16-remove-crypt-interceptors.patch"))
     ("16.0.6" . ("clang-16.0-libc-search-path.patch"
                  "clang-16-remove-crypt-interceptors.patch"))
-    ("17.0.6" . ("clang-17.0-libc-search-path.patch"))))
+    ("17.0.6" . ("clang-17.0-libc-search-path.patch"
+                 "clang-17.0-link-dsymutil-latomic.patch"))))
 
 (define (llvm-monorepo version)
   (origin

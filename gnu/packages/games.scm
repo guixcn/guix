@@ -30,7 +30,7 @@
 ;;; Copyright © 2017, 2019, 2020 Marius Bakke <mbakke@fastmail.com>
 ;;; Copyright © 2017, 2018 Rutger Helling <rhelling@mykolab.com>
 ;;; Copyright © 2017 Roel Janssen <roel@gnu.org>
-;;; Copyright © 2017-2023 Nicolas Goaziou <mail@nicolasgoaziou.fr>
+;;; Copyright © 2017-2024 Nicolas Goaziou <mail@nicolasgoaziou.fr>
 ;;; Copyright © 2018 okapi <okapi@firemail.cc>
 ;;; Copyright © 2018 Tim Gesthuizen <tim.gesthuizen@yahoo.de>
 ;;; Copyright © 2018 Madalin Ionel-Patrascu <madalinionel.patrascu@mdc-berlin.de>
@@ -938,6 +938,41 @@ original rogue game found on 4.2BSD.")
     (home-page "https://github.com/Davidslv/rogue")
     (license license:bsd-3)))
 
+(define-public sgt-puzzles
+  (let ((commit "80aac3104096aee4057b675c53ece8e60793aa90")
+        (revision "0"))
+    (package
+      (name "sgt-puzzles")
+      (version (git-version "20240302" revision commit))
+      (source
+       (origin
+         (method git-fetch)
+         (uri (git-reference
+               (url "https://git.tartarus.org/simon/puzzles.git")
+               (commit commit)))
+         (file-name (git-file-name name version))
+         (sha256
+          (base32 "0z4clv0xi98q28riz323ppn165cm62gj1c6h3xdd2sym4v8gy65z"))))
+      (build-system cmake-build-system)
+      (arguments
+       (list
+        #:tests? #f                     ;No tests.
+        #:configure-flags #~(list "-DNAME_PREFIX=sgt-")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'unpack 'set-xdg-open-path
+              (lambda* (#:key inputs #:allow-other-keys)
+                (substitute* "gtk.c"
+                  (("(#define HELP_BROWSER_PATH).+" all define)
+                   (format #f "~a ~s~%" define
+                           (search-input-file inputs "/bin/xdg-open")))))))))
+      (inputs (list gtk+ xdg-utils))
+      (native-inputs (list pkg-config perl imagemagick halibut))
+      (home-page "https://www.chiark.greenend.org.uk/~sgtatham/puzzles/")
+      (synopsis "Simon Tatham's portable puzzle collection")
+      (description "Simon Tatham's Portable Puzzle Collection contains a number of
+popular puzzle games for one player.")
+      (license license:expat))))
 
 (define-public bzflag
   (package
@@ -2131,14 +2166,14 @@ It is similar to standard chess but this variant is far more complicated.")
 (define-public ltris
   (package
     (name "ltris")
-    (version "1.2.6")
+    (version "1.3")
     (source
      (origin
        (method url-fetch)
        (uri (string-append "mirror://sourceforge/lgames/ltris/"
                            "ltris-" version ".tar.gz"))
        (sha256
-        (base32 "1xj65kn815x2hq1ynzjyc90dj178xwa2xvx7jx99qf60ahaf4g62"))))
+        (base32 "144zvnnky79z5ychyyb2wsp7h2pcbl50fbzd9w9dvxkw6adz4yip"))))
     (build-system gnu-build-system)
     (arguments
      '(#:phases
@@ -4677,7 +4712,7 @@ on the screen and keyboard to display letters.")
 (define-public manaplus
   (package
     (name "manaplus")
-    (version "1.9.3.23")
+    (version "2.1.3.17")
     (source (origin
               (method url-fetch)
               (uri (string-append
@@ -4685,18 +4720,15 @@ on the screen and keyboard to display letters.")
                     version "/manaplus-" version ".tar.xz"))
               (sha256
                (base32
-                "1ky182p4svwdqm6cf7jbns85hidkhkhq4s17cs2p381f0klapfjz"))))
+                "0ggswsa3xq7lss3j4k7fyzn56sw7hlrwk744i3d9w0n4932nmlg8"))))
     (build-system gnu-build-system)
     (arguments
-     '(#:configure-flags
-       (list (string-append "CPPFLAGS=-I"
-                            (assoc-ref %build-inputs "sdl-union")
-                            "/include/SDL"))))
+     (list #:configure-flags #~'("--with-sdl2")))
     (native-inputs
      (list pkg-config))
     (inputs
      (list glu curl libxml2 mesa
-           (sdl-union)))
+           sdl2 sdl2-image sdl2-mixer sdl2-net sdl2-ttf))
     (home-page "https://manaplus.org")
     (synopsis "Client for 'The Mana World' and similar games")
     (description
@@ -7088,7 +7120,7 @@ fish.  The whole game is accompanied by quiet, comforting music.")
 (define-public crawl
   (package
     (name "crawl")
-    (version "0.30.1")
+    (version "0.31.0")
     (source
      (origin
        (method git-fetch)
@@ -7097,7 +7129,7 @@ fish.  The whole game is accompanied by quiet, comforting music.")
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "1rlp8z1n7ziv7aaa3fb4h4nnq24pfz1m23a99c1ra582fh0yx1pl"))
+        (base32 "0igrl0a9qd2g27q3wr86xjkpqcqs4y7bh3na1saqvpd4vc8mbayk"))
        (patches (search-patches "crawl-upgrade-saves.patch"))))
     (build-system gnu-build-system)
     (inputs
@@ -7425,7 +7457,7 @@ at their peak of economic growth and military prowess.
 (define-public open-adventure
   (package
     (name "open-adventure")
-    (version "1.16")
+    (version "1.18")
     (source
      (origin
        (method git-fetch)
@@ -7434,7 +7466,7 @@ at their peak of economic growth and military prowess.
              (commit version)))
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0spciwqcyldalzdd813zwigbldcnyaxi7kfslq1yp0fg4c4a10aa"))))
+        (base32 "1zl72lsp443aryzmwzh5w4j439jgf5njvh9xig6vjvmzhfcjkk9q"))))
     (build-system gnu-build-system)
     (arguments
      (list
@@ -7463,10 +7495,13 @@ at their peak of economic growth and military prowess.
                 (install-file "advent.6" man)))))))
     (native-inputs
      (list asciidoc
+           cppcheck
            libedit
            pkg-config
+           python-pylint
            python-pyyaml
-           python-wrapper))
+           python-wrapper
+           ruby-asciidoctor))
     (home-page "https://gitlab.com/esr/open-adventure")
     (synopsis "Colossal Cave Adventure")
     (description
@@ -8452,7 +8487,7 @@ ncurses for text display.")
 (define-public naev
   (package
     (name "naev")
-    (version "0.10.4")
+    (version "0.11.4")
     (source
      (origin
        (method git-fetch)
@@ -8462,7 +8497,7 @@ ncurses for text display.")
              (recursive? #t))) ; for game data
        (file-name (git-file-name name version))
        (sha256
-        (base32 "0lg8cmzdzzpmqgmh9a1v190vv4d15hwa0inyzdwsq5x8lyc13hyr"))))
+        (base32 "1gd7jgb996fgnlrlqkfyx416g1kd458vik3nviazwwj83ksafaqb"))))
     (build-system meson-build-system)
     (arguments
      ;; XXX: Do not add debugging symbols, which cause the build to fail.
@@ -11375,7 +11410,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
 (define-public vcmi
   (package
     (name "vcmi")
-    (version "1.4.2")
+    (version "1.4.5")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -11384,7 +11419,7 @@ play; it will look for them at @file{~/.local/share/fheroes2} folder.")
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "039d9dvb2i4y1fj6q5py34r17fwb5jqxkjcg7j57asjk4w9b7i8b"))
+                "1z4vy3drj6dra8rb243pyryr61jnlw3l7yxsxwl9rddv8cdk69lz"))
               (patches (search-patches "vcmi-disable-privacy-breach.patch"))))
     (build-system cmake-build-system)
     (arguments

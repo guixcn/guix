@@ -100,6 +100,8 @@ a fully open, non-proprietary, patent-and-royalty-free, general-purpose
 compressed audio format for mid to high quality (8kHz-48.0kHz, 16+ bit,
 polyphonic) audio and music at fixed and variable bitrates from 16 to
 128 kbps/channel.")
+   ;; This package shows a sizable speed increase when tuned.
+   (properties `((tunable? . #t)))
    (license (license:non-copyleft "file://COPYING"
                                "See COPYING in the distribution."))
    (home-page "https://xiph.org/vorbis/")))
@@ -367,6 +369,8 @@ is unmatched for interactive speech and music transmission over the Internet,
 but is also intended for storage and streaming applications.  It is
 standardized by the Internet Engineering Task Force (IETF) as RFC 6716 which
 incorporated technology from Skype's SILK codec and Xiph.Org's CELT codec.")
+    ;; This package shows a sizable speed increase when tuned.
+    (properties `((tunable? . #t)))
     (license license:bsd-3)
     (home-page "https://www.opus-codec.org")))
 
